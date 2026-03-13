@@ -3,6 +3,14 @@ import { useState } from 'react';
 import Image from 'next/image';
 
 export default function Home() {
+  const speak = (text: string) => {
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
   const [text, setText] = useState('');
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -58,14 +66,26 @@ export default function Home() {
           {result && (
               <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                  <h3 className="font-bold text-blue-600 mb-2">🚀 Pro Refactor (CTO Level)</h3>
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-bold text-blue-600">🚀 Pro Refactor (CTO Level)</h3>
+                    <button onClick={() => speak(result.refactor_pro)} className="p-2 hover:bg-slate-100 rounded-full transition-all" title="Escuchar">
+                      🔊
+                    </button>
+                  </div>
                   <p className="text-slate-700 italic">"{result.refactor_pro}"</p>
                 </div>
 
+
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                  <h3 className="font-bold text-green-600 mb-2">💬 Casual (Slack/Team)</h3>
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="font-bold text-green-600">💬 Casual (Slack/Team)</h3>
+                    <button onClick={() => speak(result.refactor_casual)} className="p-2 hover:bg-slate-100 rounded-full transition-all" title="Escuchar">
+                      🔊
+                    </button>
+                  </div>
                   <p className="text-slate-700 italic">"{result.refactor_casual}"</p>
                 </div>
+
 
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2">
                   <h3 className="font-bold text-purple-600 mb-2">🧠 Grammar Focus</h3>
@@ -75,21 +95,18 @@ export default function Home() {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                   <h3 className="font-bold text-orange-600 mb-2">📚 Key Phrases</h3>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {result.phrases.map((p: string, i: number) => (
-                        <span key={i} className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm border border-orange-100">
-                    {p}
-                  </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-orange-200 bg-orange-50 md:col-span-1">
-                  <h3 className="font-bold text-slate-800 mb-2">🎯 Challenge</h3>
-                  <p className="text-slate-700">{result.challenge}</p>
+                    {(result?.phrases || []).map((p: string, i: number) => (
+                        <button
+                            key={i}
+                            onClick={() => speak(p)}
+                            className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-sm border border-orange-100 hover:bg-orange-100 transition-colors"
+                        >
+                          {p} 🔊
+                        </button>
+                    ))}                  </div>
                 </div>
               </div>
-          )}
-        </div>
+          )}        </div>
       </main>
   );
 }
